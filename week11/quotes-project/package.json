@@ -1,0 +1,21 @@
+{
+  "name": "quotes-project",
+  "version": "1.0.0",
+  "description": "Quote Management",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "backend": "json-server --watch ./data/db.json --port 5000" 
+  },
+  "keywords": [],
+  "author": "Parinda Lertpituckchaiporn",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
+}
