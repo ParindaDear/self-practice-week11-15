@@ -17,7 +17,7 @@ console.log("ending...")
 
 
 //VER1.1
-function doSomething(hasProblem){ // func ตัวตั้งต้นของ VER1 ทั้งหมด
+async function doSomething(hasProblem){ // func ตัวตั้งต้นของ VER1 ทั้งหมด
     return new Promise ((reslove, reject) => {
         setTimeout(
             () => (hasProblem ? reject("Fail working") : reslove("Fully Complete")),

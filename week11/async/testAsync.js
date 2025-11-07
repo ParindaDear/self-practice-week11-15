@@ -1,4 +1,4 @@
-function doSomething(hasProblem){
+async function doSomething(hasProblem){
     return new Promise ((reslove, reject) => {
         setTimeout(
             () => (hasProblem ? reject("Fail working") : reslove("Fully Complete")),
