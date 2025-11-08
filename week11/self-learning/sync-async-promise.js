@@ -37,27 +37,46 @@
 - ใช้ try-catch
 - ให้ log ข้อความ "Start download..." ก่อน await
 - เมื่อเสร็จให้แสดง "Finish!" */
+// function downloadFile(isNetworkError) {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             if (isNetworkError) reject("Network Error!");
+//             else resolve("Download success!");
+//         }, 2000);
+//     });
+// }
 
-function downloadFile(isNetworkError) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (isNetworkError) reject("Network Error!");
-            else resolve("Download success!");
-        }, 2000);
+// async function run() {
+//     console.log("Start download...");
+
+//     try {
+//         const result = await downloadFile(false);
+//         console.log(result);
+//     } catch (error) {
+//         console.log(error);
+//     }
+
+//     console.log("Finish!");
+// }
+
+// run();
+
+/*Exercise 3: Delay async function
+ให้สร้างฟังก์ชัน wait(ms) ที่เป็น promise และรอเวลาตามจำนวน ms
+ตัวอย่างการเรียก 
+    await wait(2000)
+    console.log("2 seconds passed")
+Hint: ใช้ setTimeout(resolve, ms) */
+function wait(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
     });
 }
 
-async function run() {
-    console.log("Start download...");
-
-    try {
-        const result = await downloadFile(false);
-        console.log(result);
-    } catch (error) {
-        console.log(error);
-    }
-
-    console.log("Finish!");
+async function test() {
+    console.log("Waiting 2 seconds...");
+    await wait(2000);
+    console.log("2 seconds passed");
 }
 
-run();
+test();
