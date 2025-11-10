@@ -67,16 +67,62 @@
     await wait(2000)
     console.log("2 seconds passed")
 Hint: ใช้ setTimeout(resolve, ms) */
-function wait(ms) {
+// function wait(ms) {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, ms);
+//     });
+// }
+
+// async function test() {
+//     console.log("Waiting 2 seconds...");
+//     await wait(2000);
+//     console.log("2 seconds passed");
+// }
+
+// test();
+
+/*Exercise 4: Promise chain
+สร้างฟังก์ชัน 3 ตัวที่ return promise:
+    Function	   เวลา	     ผลลัพธ์
+    login()	2s	  "Login    success"
+    getUserData()	3s	"User data loaded"
+    showDashboard()	1s	"Dashboard ready"
+ให้เรียง chain แบบ
+    login()
+    .then(...)
+    .then(...)
+    .then(...)
+ลองเปลี่ยนให้ getUserData() return reject() แล้วจัดการด้วย .catch() */
+function login() {
     return new Promise((resolve) => {
-        setTimeout(resolve, ms);
+        setTimeout(() => resolve("Login success"), 2000);
     });
 }
 
-async function test() {
-    console.log("Waiting 2 seconds...");
-    await wait(2000);
-    console.log("2 seconds passed");
+function getUserData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve("User data loaded"), 3000);
+    });
 }
 
-test();
+function showDashboard() {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve("Dashboard ready"), 1000);
+    });
+}
+
+login()
+    .then((msg) => {
+        console.log(msg);
+        return getUserData();
+    })
+    .then((msg) => {
+        console.log(msg);
+        return showDashboard();
+    })
+    .then((msg) => {
+        console.log(msg);
+    })
+    .catch((err) => {
+        console.log("Error:", err);
+    })
