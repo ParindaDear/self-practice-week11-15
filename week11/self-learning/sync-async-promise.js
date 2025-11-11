@@ -93,36 +93,64 @@ Hint: ใช้ setTimeout(resolve, ms) */
     .then(...)
     .then(...)
 ลองเปลี่ยนให้ getUserData() return reject() แล้วจัดการด้วย .catch() */
-function login() {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve("Login success"), 2000);
-    });
+// function login() {
+//     return new Promise((resolve) => {
+//         setTimeout(() => resolve("Login success"), 2000);
+//     });
+// }
+
+// function getUserData() {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => resolve("User data loaded"), 3000);
+//     });
+// }
+
+// function showDashboard() {
+//     return new Promise((resolve) => {
+//         setTimeout(() => resolve("Dashboard ready"), 1000);
+//     });
+// }
+
+// login()
+//     .then((msg) => {
+//         console.log(msg);
+//         return getUserData();
+//     })
+//     .then((msg) => {
+//         console.log(msg);
+//         return showDashboard();
+//     })
+//     .then((msg) => {
+//         console.log(msg);
+//     })
+//     .catch((err) => {
+//         console.log("Error:", err);
+//     })
+
+
+/*Exercise 5: ใช้ async-await + loop
+ให้มี user 3 คนใน array
+    const users = ["A", "B", "C"]
+ให้เขียนฟังก์ชัน processUsers(users)
+- ทำงานทีละคน (ห้ามใช้ Promise.all())
+- ในแต่ละรอบให้รอ wait(1000) ก่อน
+- แสดง "Processing user: A" ... "Done"
+Output ตัวอย่าง
+    Processing user: A
+    Processing user: B
+    Processing user: C
+    All done. */
+function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getUserData() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => resolve("User data loaded"), 3000);
-    });
+async function processUsers(users) {
+    for (const user of users) {
+        console.log(`Processing user: ${user}`);
+        await wait(1000);
+    }
+
+    console.log("All done.");
 }
 
-function showDashboard() {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve("Dashboard ready"), 1000);
-    });
-}
-
-login()
-    .then((msg) => {
-        console.log(msg);
-        return getUserData();
-    })
-    .then((msg) => {
-        console.log(msg);
-        return showDashboard();
-    })
-    .then((msg) => {
-        console.log(msg);
-    })
-    .catch((err) => {
-        console.log("Error:", err);
-    })
+processUsers(["A", "B", "C"]);
