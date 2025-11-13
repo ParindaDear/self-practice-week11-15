@@ -1,0 +1,147 @@
+🎃ไฟล์ fetchUtils.js
+
+VER1
+async function getItems(url) {
+    try {
+        const res = await fetch(url)  //fetch returns response object
+        console.log(res)
+        if(!res.ok) throw new Error('There is some problem, please try again')
+        const data = await res.json() //json() converts json string to JS
+        console.log(data)
+        return data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+export { getItems }
+
+
+VER2
+async function getItems(url) {
+  let message = ""
+  try {
+    const res = await fetch(url) //fetch returns respnse object
+    console.log(res)
+    if (!res.ok) {
+      switch (res.status) {
+        case 404:
+          message = "404 - Item not found"
+          break
+        case 409:
+          message = "409 - Conflict"
+          break
+        default:
+          message = "Fail to get item, please try again"
+      }
+      throw new Error(message)
+    }
+    const data = await res.json() //json() converts json string to JavaScript object
+    console.log(data)
+    return data
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+export { getItems }
+
+
+🎃ไฟล์ quoteManagement.js
+
+VER1
+import { getItems } from "./myLib/fetchUtils.js"
+const quoteURL = `${import.meta.env.VITE_APP_URL}/quotess`
+//GET Quotes
+async function loadQuotes() {
+  try {
+    const quotes = await getItems(quoteURL)
+    console.log(quotes)
+    return quotes
+  } catch (error) {
+    alert(`Quote: ${error}`)
+  }
+}
+export { loadQuotes }
+
+🎃🎃🎃🎃 ขึ้นเรื่อง DELETE 🎃🎃🎃🎃
+🎃ไฟล์ fetchUtils.js
+async function deleteItem(url, id) {
+  try {
+    const res = await fetch(`${url}/${id}`, { method: "DELETE" })
+    if(!res.ok) throw new Error("Fail to delete item") //อันนี้เขียนแบบย่อ ถ้าอยากดูฉบับเต็มให้ไปดู GET ข้างบน
+    return id
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+export { getItems, deleteItem }
+
+🎃ไฟล์ quoteManagement.js
+async function deleteQuote(id) {
+  try{
+    const removeId = await deleteItem(quoteURL, id)
+    return removeId
+  } catch (error) {
+    alert(`Quote: ${error}`)
+  }
+}
+export { loadQuotes, deleteQuote }
+
+🎃ไฟล์ app.js
+async function handleDelete(e) {
+  //e=event object
+  // console.log(e.target.dataset.id)
+  const removeId = e.target.dataset.id
+  const ans = confirm(`Do you want to delete quote: ${removeId} `)
+  if (ans) {
+    try {
+      //1. delete quote in the backend
+      const deletedId = await deleteQuote(removeId)
+      // console.log(deletedId)
+      //2. find remove quote div element
+      const removeQuoteDivEle = document.querySelector(
+        `div[data-id="${deletedId}"]`
+      )
+      // console.log(removeQuoteDivEle)
+      const quoteListEle = document.querySelector("#quoteList")
+      console.log(quoteListEle)
+      //3. delete quote div element
+      quoteListEle.removeChild(removeQuoteDivEle)
+    } catch (e) {
+      alert(`App: ${e.message}`)
+    }
+  }
+}
+
+
+
+🎃🎃🎃🎃 ขึ้นเรื่อง add (POST)🎃🎃🎃🎃
+🎃ไฟล์ fetchUtils.js
+async function addItem(url, item) {
+  try {
+    const res = await fetch(`${url}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    })
+    if (res.status !== 201) throw new Error("Fail to add item")  //จัดการ error mode 400,500
+    const addedItem = res.json()
+    return addedItem
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+
+🎃ไฟล์ quoteManagement.js
+async function addQuote(item) {
+  try {
+    const addedQuote = await addItem(quoteURL, item)
+    return addedQuote
+  } catch (error) {
+    alert(`Quote: ${error}`)
+  }
+}
+
