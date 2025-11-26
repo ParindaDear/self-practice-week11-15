@@ -52,3 +52,50 @@ const result = d4.toLocaleString("th-TH", {
 
 console.log(result);
 //วันพฤหัสบดีที่ 1 มกราคม พ.ศ. 2569 เวลา 06:30
+
+
+/*5. คำนวนระยะเวลาห่างกันของ 2 เวลา (แบบมี timezone ต่างกัน)
+กำหนด:
+const t1 = "2025-03-01T02:45:00Z"        // UTC
+const t2 = "2025-03-01T12:00:00+09:00"  // Tokyo time
+ให้เขียนฟังก์ชัน diffMinutes(t1, t2) → return ความต่างเป็น “นาที”
+(ผลลัพธ์ต้องเป็นค่าบวก) */
+function diffMinutes(a, b) {
+  const d1 = new Date(a)
+  const d2 = new Date(b)
+
+  const diffMs = Math.abs(d1 - d2)   
+  return Math.floor(diffMs / 1000 / 60)
+}
+
+console.log(diffMinutes("2025-03-01T02:45:00Z", "2025-03-01T12:00:00+09:00")) //15
+
+/*6. เช็คว่าเวลานี้คือ “วันเดียวกัน” ตาม timezone ที่กำหนด
+ให้เขียนฟังก์ชัน: function isSameDayWithTZ(a, b, timeZone)
+โดย input:
+a = "2025-02-28T18:30:00Z"
+b = "2025-03-01T02:00:00Z"
+timeZone = "Asia/Bangkok"
+ถาม: เมื่อแปลงเป็นเวลาไทยแล้ว เป็นวันเดียวกันหรือไม่? */
+function convert(dateStr, timeZone) {
+  return new Date(
+    new Date(dateStr).toLocaleString("en-US", { timeZone })
+  )
+}
+
+function isSameDayWithTZ(a, b, tz) {
+  const d1 = convert(a, tz)
+  const d2 = convert(b, tz)
+
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  )
+}
+
+console.log(isSameDayWithTZ(
+  "2025-02-28T18:30:00Z",
+  "2025-03-01T02:00:00Z",
+  "Asia/Bangkok"
+)) //true

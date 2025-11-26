@@ -113,7 +113,8 @@ async function handleAddEdit(event) {
     // ADD เพราะยังไม่มี quote (else มักเป็นสิ่งที่เป็น false ซึ่ง faslse ในที่นี้คือ quoteId = " " คือยังไม่มี quote)
     try {
       //1. add new Item in the backend
-      const newQuote = await addQuote({ content: newContent, author: newAuthor }) //{content:content, author:author}
+      const newQuote = await addQuote({ content: newContent, author: newAuthor }) 
+                                      //{content:content, author:author}
       //2. add new quote card
       const newQuoteDivEle = newQuoteCard(newQuote)
       const quoteListEle = document.getElementById("quoteList")
@@ -122,14 +123,10 @@ async function handleAddEdit(event) {
       alert(`App: ${e.message}`)
     }
   }
-
-
-
   //3. clear form
   formEle.quoteId.value = ""
   formEle.content.value = ""
   formEle.author.value = ""
-
 }
 
 
