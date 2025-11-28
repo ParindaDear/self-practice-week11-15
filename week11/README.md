@@ -1,0 +1,1 @@
+# week นี้ไม่มี class เลยได้ศึกษา Technical Spike สำหรับ Integrated Project (Pre-Game) เรื่อง date/time และ UTF-8 

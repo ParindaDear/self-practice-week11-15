@@ -1,93 +1,19 @@
-Chapter 8- Fetch API
-🎃Synchronous/Asynchronous + 🎃Promise
-- Synchronous คือรอคำสั่งก่ออนหน้าให้ประมวลผลเสร็จถึงจะเริ่มทำ
-- Asynchronous เป็นงานที่ใช้เวลาเลยไม่รอ, เราอาจไม่ได้ผลลัพธ์ทันที ซึ่งเราต้องระวังมันส่งผลต่องานเรา
-- Promise : func ที่คืนผลลัพธ์เป็น promise คือ async func 
-  ซึ่งมันจะได้ผลลัพธ์เป็น pending โดยมันจะคืนค่าได้ 2 แบบคือ fulfilled(ปกติ), rejected(ไม่ปกติ)
+เรื่อง date/time และ UTF-8 
+- Frontend: HTML + JS 
+- Backend: Node.js + Express  
+- Database: MySQL  
 
-//sync 
-console.log("starting...")
-console.log("working...")
-console.log("ending...")
+ใน database
+- ใช้ utf8mb4 แทน utf8 เพื่อให้มันรองรับทุกอักขระใน Unicode เพราะ utf8 รองรับเพียง 3 bytes
+- COLLATE คือวิธีเปรียบเทียบและเรียงลำดับข้อความในฐานข้อมูล
+- เรา set DEFAULT CHARSET... เเค่ใน table study_plan เพราะ name_th จะเก็บภาษาไทย ซึ่งมันจะทำให้ทุก column ใน table นี้ใช้ UTF-8 อัตโนมัติ
 
-//async
-console.log("starting...")
-setTimeout(() => console.log("working..."), 5000) //async
-console.log("ending...")
+Technical Spike Answers :
+1.which (data type should we use for date/time)
+ใน database ตรง created_at กับ updated_at ให้ใช้ datatype เป็น DATETIME  
+แล้วกำหนด DEFAULT เป็น current_timestamp เพื่อให้ database มัน auto-generate timestamp เพราะ DATETIME ไม่ผูกกับ timezone ของ server ทำให้เก็บค่าเป็น UTC ตรงตาม requirement ที่อ.ให้ และให้ Database เป็นคนสร้างค่า created_at / updated_at โดยอัตโนมัติ
 
-
-//VER1.1
-async function doSomething(hasProblem){ // func ตัวตั้งต้นของ VER1 ทั้งหมด
-    return new Promise ((reslove, reject) => {
-        setTimeout(
-            () => (hasProblem ? reject("Fail working") : reslove("Fully Complete")),
-            5000
-        )
-    })
-}
-console.log("starting...")
-const workingStatus = doSomething(false)
-console.log(workingStatus)
-console.log("ending")
-//จะเห็นว่าทั้ง 3 ผูกพันธ์กัน
-
-
-//VER1.2
-//แบบ1. using .then().catch()    .then()คือต้องมีการรอ สั่งให้มันรอ มันใช้ในการจัดการผลลัพธ์ที่มาจาก result function
-console.log("starting...")
-doSomething(false).then((workingStatus) => { //ต้องตั้งตัวแปรไรก็ได้ไปรับผลจาก doSomething ซึ่งในที่นี้คือ workingStatus
-    console.log(workingStatus)              //(ต่อ)ถ้าเราใส่ true จะ fail ซึ่งเราไม่มามีการจัดการกับการทำงานที่ผิดปกติ มันเลยเเสดง error ซึ่งไม่ควรเลย ดังนั้นเเก้ด้วย .catch
-    console.log("ending")
-})
-
-
-//VER1.3
-//แบบ1. using .then().catch()  
-// .then()คือต้องมีการรอ สั่งให้มันรอ มันใช้ในการจัดการผลลัพธ์ที่มาจาก result function
-// .catch() คือจัดการผลลัพธ์ที่เป็น reject func จาก promise   
-console.log("starting...")
-doSomething(true)
-    .then((workingStatus) => { //ต้องตั้งตัวแปรไรก็ได้ไปรับผลจาก doSomething ซึ่งในที่นี้คือ workingStatus
-        console.log(workingStatus)  //(ต่อ)ถ้าเราใส่ true จะ fail ซึ่งเราไม่มามีการจัดการกับการทำงานที่ผิดปกติ มันเลยเเสดง error ซึ่งไม่ควรเลย ดังนั้นเเก้ด้วย .catch
-        console.log("ending")
-    })
-    .catch((errMessage) => { // catch จะทำให้มันไม่จบแบบ error
-        console.log(errMessage) //ถ้ามัน fail จะให้มันทำไร
-    })
-
-
-//VER1.4
-//แบบ2. async-await 
-//ปัญหาคือ awit อยู่คนเดียวไม่ได้ มันต้องอยู่ใต้ func ที่เป็น async เท่านั้น
-// หลัง await ต้องรอให้เสร็จ รอเท่านั้นไม่ว่าจะนานเท่าไหร่
-async function runWorking() {
-    const workingStatus = await doSomething(false)
-    console.log(workingStatus)
-    console.log("ending...")
-}
-runWorking()
-
-
-//VER1.5
-//แบบ2. async-await 
-//ปัญหาคือ awit อยู่คนเดียวไม่ได้ มันต้องอยู่ใต้ func ที่เป็น async เท่านั้น
-// หลัง await ต้องรอให้เสร็จ รอเท่านั้นไม่ว่าจะนานเท่าไหร่
-async function runWorking() {
-    try{ //try คือคำสั่งที่เสี่ยงที่จะเกิด error
-        const workingStatus = await doSomething(true)  //ถ้าใช้ตรงนี้เป็น true จะเกิด error ต้องแก้โดยใส่ try catch
-        console.log(workingStatus)
-        console.log("ending...")
-    } catch(error) {
-        console.log(error)
-    }
-}
-runWorking()
-
-
-🎃REST API + 🎃JSON-Server + 🎃Fetch API CRUD
-ไฟล์ fetchUtils.js
-// VER1
-//GET 
-//fetch("http://localhost:5000")
-//เเก้ความยุ่งยากของการ hard code URL โดยใช้ .env หรือ .env.production
-await fetch(`${import.meta.env.VITE_APP_URL}/quotes`) 
+2. how (to store/send/receive date/time)
+- ในไฟล์ db.js ที่เชื่อม backend กับ database ต้องกำหนด timezone: "Z" บอก backend ให้ใช้ UTC 
+- ในเรื่องการทำให้มันรองรับ UTF-8 ในไฟล์ db.js ก็กำหนด charset: "utf8mb4"  
+และใน database ตอน create database กับ table ก็เขียน CHARACTER SET utf8mb4
